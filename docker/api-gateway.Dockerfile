@@ -7,10 +7,10 @@ WORKDIR /build
 COPY src/shared /build/shared
 COPY src/api-gateway /build/svc
 RUN pip wheel --wheel-dir /wheels /build/shared && \
-    pip install --no-deps --prefix=/install --no-index --find-links=/wheels securebank-shared && \
+    pip install --prefix=/install --no-index --find-links=/wheels securebank-shared && \
     pip install --prefix=/install --no-cache-dir \
         fastapi 'uvicorn[standard]' pydantic pydantic-settings httpx 'pyjwt[crypto]' \
-        cryptography prometheus-client python-json-logger structlog slowapi tenacity
+        cryptography argon2-cffi prometheus-client python-json-logger structlog slowapi tenacity
 
 FROM gcr.io/distroless/python3-debian12:nonroot
 ENV PYTHONPATH=/install/lib/python3.11/site-packages:/app \

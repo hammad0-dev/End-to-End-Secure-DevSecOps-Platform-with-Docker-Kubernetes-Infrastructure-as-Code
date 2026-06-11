@@ -13,18 +13,18 @@ resource "vault_mount" "transit" {
 }
 
 resource "vault_transit_secret_backend_key" "session_enc" {
-  backend = vault_mount.transit.path
-  name    = "session-encryption"
-  type    = "aes256-gcm96"
-  exportable = false
+  backend          = vault_mount.transit.path
+  name             = "session-encryption"
+  type             = "aes256-gcm96"
+  exportable       = false
   deletion_allowed = false
 }
 
 resource "vault_transit_secret_backend_key" "field_enc" {
-  backend = vault_mount.transit.path
-  name    = "field-encryption"
-  type    = "aes256-gcm96"
-  exportable = false
+  backend          = vault_mount.transit.path
+  name             = "field-encryption"
+  type             = "aes256-gcm96"
+  exportable       = false
   deletion_allowed = false
 }
 
@@ -45,7 +45,7 @@ locals { services = ["auth-service", "account-service", "transaction-service", "
 resource "vault_policy" "svc" {
   for_each = toset(local.services)
   name     = each.value
-  policy = <<-EOT
+  policy   = <<-EOT
     path "transit/encrypt/session-encryption" { capabilities = ["update"] }
     path "transit/decrypt/session-encryption" { capabilities = ["update"] }
     path "transit/encrypt/field-encryption"   { capabilities = ["update"] }

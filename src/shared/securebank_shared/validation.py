@@ -24,9 +24,13 @@ from pydantic import (
 def _validate_email(value: str) -> str:
     try:
         info = validate_email(value, check_deliverability=False)
-    except EmailNotValidError as e:
-        raise ValueError(str(e)) from e
-    return info.normalized.lower()
+        return info.normalized.lower()
+    except EmailNotValidError:
+        # Allow dev/demo hostnames (e.g. demo@securebank.local) in compose stacks.
+        v = value.strip().lower()
+        if re.match(r"^[^@\s]+@[^@\s]+\.local$", v):
+            return v
+        raise
 
 
 SafeEmail = Annotated[

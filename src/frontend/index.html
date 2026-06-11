@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>SecureBank — Trusted Banking</title>
+<title>NexusVault — Secure Digital Banking</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="dark light">
 <meta http-equiv="Content-Security-Policy"
       content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' https://api.securebank.local; img-src 'self' data:; font-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'">
 <meta name="referrer" content="no-referrer">
 <link rel="stylesheet" href="/styles.css">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%2300d4aa' d='M16 2L4 7v10c0 7 5 12 12 13 7-1 12-6 12-13V7L16 2zm0 3l9 4v8c0 5-4 9-9 10-5-1-9-5-9-10V9l9-4z'/%3E%3Cpath fill='%2300d4aa' d='M12 14v6h2v-6h-2zm6 0v6h2v-6h-2zm-3-2v8h2v-8h-2z'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%23c084fc' d='M16 2l12 7v9c0 6.5-4.5 11.5-12 13C8.5 29.5 4 24.5 4 18V9L16 2z'/%3E%3Cpath fill='%230f0a18' d='M16 6.5L8 11v7c0 4.8 3.4 8.5 8 9.5 4.6-1 8-4.7 8-9.5v-7l-8-4.5z'/%3E%3Crect fill='%23c084fc' x='14' y='13' width='4' height='7' rx='1'/%3E%3Cpath fill='%23c084fc' d='M16 11a2.5 2.5 0 110 5 2.5 2.5 0 010-5z'/%3E%3C/svg%3E">
 </head>
 <body>
 
@@ -17,10 +17,12 @@
 <header class="appbar" id="appbar" hidden>
   <div class="brand">
     <svg class="logo" viewBox="0 0 32 32" aria-hidden="true">
-      <path fill="currentColor" d="M16 2L4 7v10c0 7 5 12 12 13 7-1 12-6 12-13V7L16 2zm0 3l9 4v8c0 5-4 9-9 10-5-1-9-5-9-10V9l9-4z"/>
-      <path fill="currentColor" d="M12 14v6h2v-6h-2zm6 0v6h2v-6h-2zm-3-2v8h2v-8h-2z"/>
+      <path fill="currentColor" d="M16 2l12 7v9c0 6.5-4.5 11.5-12 13C8.5 29.5 4 24.5 4 18V9L16 2z"/>
+      <path fill="var(--bg)" d="M16 6.5L8 11v7c0 4.8 3.4 8.5 8 9.5 4.6-1 8-4.7 8-9.5v-7l-8-4.5z"/>
+      <rect fill="currentColor" x="14" y="13" width="4" height="7" rx="1"/>
+      <path fill="currentColor" d="M16 11a2.5 2.5 0 110 5 2.5 2.5 0 010-5z"/>
     </svg>
-    <span>SecureBank</span>
+    <span>NexusVault</span>
     <span class="env-badge" id="envBadge">DEV</span>
   </div>
   <nav class="nav">
@@ -48,12 +50,14 @@
   <section class="card login-card">
     <div class="brand brand-large">
       <svg class="logo big" viewBox="0 0 32 32" aria-hidden="true">
-        <path fill="currentColor" d="M16 2L4 7v10c0 7 5 12 12 13 7-1 12-6 12-13V7L16 2zm0 3l9 4v8c0 5-4 9-9 10-5-1-9-5-9-10V9l9-4z"/>
-        <path fill="currentColor" d="M12 14v6h2v-6h-2zm6 0v6h2v-6h-2zm-3-2v8h2v-8h-2z"/>
+        <path fill="currentColor" d="M16 2l12 7v9c0 6.5-4.5 11.5-12 13C8.5 29.5 4 24.5 4 18V9L16 2z"/>
+        <path fill="var(--bg)" d="M16 6.5L8 11v7c0 4.8 3.4 8.5 8 9.5 4.6-1 8-4.7 8-9.5v-7l-8-4.5z"/>
+        <rect fill="currentColor" x="14" y="13" width="4" height="7" rx="1"/>
+        <path fill="currentColor" d="M16 11a2.5 2.5 0 110 5 2.5 2.5 0 010-5z"/>
       </svg>
-      <h1>SecureBank</h1>
+      <h1>NexusVault</h1>
     </div>
-    <p class="muted">Zero-Trust Banking, secured by OAuth2/OIDC + MFA</p>
+    <p class="muted">Your assets, protected — OAuth2/OIDC identity with enforced MFA</p>
 
     <!-- Step 1: credentials -->
     <form id="loginForm" autocomplete="off" class="form">
@@ -104,7 +108,7 @@
   </section>
 
   <aside class="login-aside">
-    <h2>Defense-in-depth, by design</h2>
+    <h2>Built for resilience, engineered for trust</h2>
     <ul class="feature-list">
       <li><b>Zero Trust</b> — mTLS between every service, JWT + OPA per request</li>
       <li><b>MFA-enforced</b> for transfers ≥ ₨10,000</li>

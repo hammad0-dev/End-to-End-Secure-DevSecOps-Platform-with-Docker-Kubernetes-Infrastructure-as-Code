@@ -6,10 +6,6 @@ from typing import Any
 
 import httpx
 from fastapi import FastAPI, HTTPException, Request, Response
-from slowapi import Limiter
-from slowapi.errors import RateLimitExceeded
-from slowapi.middleware import SlowAPIMiddleware
-from slowapi.util import get_remote_address
 from starlette.responses import JSONResponse, StreamingResponse
 
 from securebank_shared.jwt_dep import JWKSCache
@@ -22,18 +18,11 @@ from app.waf import scan as waf_scan
 
 _LOG = get_logger("gateway")
 
-limiter = Limiter(
-    key_func=lambda r: r.state.auth_user_id or get_remote_address(r),
-    default_limits=[f"{settings.anon_rate_per_min}/minute"],
-)
-
-
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> Any:
     configure_logging(level=settings.log_level, json_logs=settings.log_json)
     app.state.http = httpx.AsyncClient(timeout=10.0, verify=True)
     app.state.jwks = JWKSCache(settings.jwks_url)
-    app.state.limiter = limiter
     try:
         yield
     finally:
@@ -55,15 +44,6 @@ install_security_middleware(
     trusted_hosts=["*"],   # public ingress; cert termination upstream
     metrics_path=settings.metrics_path,
 )
-app.state.limiter = limiter
-app.add_middleware(SlowAPIMiddleware)
-
-
-@app.exception_handler(RateLimitExceeded)
-async def ratelimit_handler(request, exc):  # noqa: ARG001
-    return JSONResponse({"detail": "rate limit exceeded"}, status_code=429)
-
-
 @app.get("/health")
 async def health() -> dict:
     return {"status": "ok", "service": settings.service_name}
@@ -73,6 +53,9 @@ _STRIP_HOP_BY_HOP = {
     "connection", "keep-alive", "proxy-authenticate", "proxy-authorization",
     "te", "trailers", "transfer-encoding", "upgrade", "host",
 }
+# httpx auto-decompresses upstream gzip; drop encoding/length so browsers
+# don't try to decompress plain JSON again.
+_STRIP_PROXY_RESP = _STRIP_HOP_BY_HOP | {"content-encoding", "content-length"}
 
 
 @app.api_route("/{full_path:path}", methods=["GET", "POST", "PUT", "DELETE"])
@@ -136,6 +119,6 @@ async def proxy(request: Request, full_path: str) -> Response:
         _LOG.error("gateway.upstream.error", err=str(e), upstream=upstream)
         return JSONResponse({"detail": "upstream unavailable"}, status_code=502)
     # Strip hop-by-hop in response too.
-    out = {k: v for k, v in resp.headers.items() if k.lower() not in _STRIP_HOP_BY_HOP}
+    out = {k: v for k, v in resp.headers.items() if k.lower() not in _STRIP_PROXY_RESP}
     return Response(content=resp.content, status_code=resp.status_code, headers=out,
                     media_type=resp.headers.get("content-type"))

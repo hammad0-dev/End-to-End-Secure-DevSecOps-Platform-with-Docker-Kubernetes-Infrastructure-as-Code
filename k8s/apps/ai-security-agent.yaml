@@ -30,7 +30,7 @@ spec:
         seccompProfile: { type: RuntimeDefault }
       containers:
         - name: ai-agent
-          image: ghcr.io/securebank/ai-security-agent:1.0.0@sha256:REPLACE_AT_BUILD
+          image: securebank-ai-security-agent:latest
           ports: [{ containerPort: 8007 }]
           env:
             - { name: SB_LLM_PROVIDER, value: "heuristic" }

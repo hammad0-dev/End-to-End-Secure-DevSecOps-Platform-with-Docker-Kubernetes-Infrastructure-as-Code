@@ -8,7 +8,7 @@ resource "kafka_topic" "transfers" {
   partitions         = 6
   config = {
     "min.insync.replicas" = "2"
-    "retention.ms"        = "604800000"  # 7d
+    "retention.ms"        = "604800000" # 7d
     "cleanup.policy"      = "delete"
     "compression.type"    = "producer"
   }

@@ -20,7 +20,8 @@ spec:
         seccompProfile: { type: RuntimeDefault }
       containers:
         - name: notification
-          image: ghcr.io/securebank/notification-service:1.0.0@sha256:REPLACE_AT_BUILD
+          image: securebank-notification-service:latest
+          imagePullPolicy: IfNotPresent
           ports: [{ containerPort: 8005 }]
           env:
             - name: SB_KAFKA_BOOTSTRAP

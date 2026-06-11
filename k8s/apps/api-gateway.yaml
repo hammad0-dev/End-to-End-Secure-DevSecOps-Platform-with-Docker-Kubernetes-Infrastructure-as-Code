@@ -20,7 +20,8 @@ spec:
         seccompProfile: { type: RuntimeDefault }
       containers:
         - name: gateway
-          image: ghcr.io/securebank/api-gateway:1.0.0@sha256:REPLACE_AT_BUILD
+          image: securebank-api-gateway:latest
+          imagePullPolicy: IfNotPresent
           ports: [{ containerPort: 8443 }]
           env:
             - name: SB_JWKS_URL

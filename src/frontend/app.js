@@ -1,5 +1,5 @@
 /* ============================================================
-   SecureBank — SPA client
+   NexusVault — SPA client
    - Vanilla JS, no build step.
    - Token kept in memory only (refresh in HttpOnly cookie in real prod).
    - Hash-router with role-aware nav.
@@ -79,6 +79,9 @@ async function api(method, path, body = null, opts = {}) {
     err.status = r.status; err.data = data;
     throw err;
   }
+  if (data == null) {
+    throw new Error('Invalid response from server (empty or non-JSON body)');
+  }
   return data;
 }
 
@@ -107,7 +110,7 @@ function parseJwt(token) {
 
 async function login(email, password) {
   const r = await api('POST', '/auth/login', { email, password }, { noAuth: true });
-  if (r.mfa_required) {
+  if (r.mfa_required && r.pre_auth_token) {
     sessionStorage.setItem('preauth', r.pre_auth_token);
     pushRecent('auth.login.pwd_ok.mfa_required', 'ok');
     showMFA();
@@ -669,7 +672,7 @@ async function demoApi(method, path, body) {
   if (path === '/auth/register') return { status: 'accepted' };
   if (path === '/auth/mfa/enroll') {
     return { qr_png_b64: TRANSPARENT_PNG_B64,
-             secret: 'JBSWY3DPEHPK3PXP', issuer: 'SecureBank' };
+             secret: 'JBSWY3DPEHPK3PXP', issuer: 'NexusVault' };
   }
 
   if (path === '/accounts/me' && method === 'GET') {
@@ -781,7 +784,7 @@ function renderFakeQR(text, modules = 25, cell = 10) {
     }
   }
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}"
-            viewBox="0 0 ${size} ${size}" shape-rendering="crispEdges" fill="#0b0f1a">
+            viewBox="0 0 ${size} ${size}" shape-rendering="crispEdges" fill="#0f0a18">
             <rect width="${size}" height="${size}" fill="#fff"/>${rects.join('')}</svg>`;
 }
 
@@ -870,20 +873,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
   $('#btnEnrollMFA').addEventListener('click', () => {
     const secret = 'JBSWY3DPEHPK3PXP';
-    const qrSvg  = renderFakeQR(`otpauth://totp/SecureBank:${state.user.email}?secret=${secret}&issuer=SecureBank`);
+    const qrSvg  = renderFakeQR(`otpauth://totp/NexusVault:${state.user.email}?secret=${secret}&issuer=NexusVault`);
     const w = window.open('', '_blank', 'width=420,height=520');
     if (!w) { toast('Pop-up blocked — please allow pop-ups', 'warn'); return; }
     w.document.write(`
       <!doctype html><html><head><meta charset="utf-8"><title>Enroll MFA</title>
-      <style>body{font-family:system-ui;background:#0b0f1a;color:#e7edf7;text-align:center;padding:2rem}
-      .qr{display:inline-block;padding:1rem;background:#fff;border-radius:12px}
-      code{background:#131a2b;padding:.25rem .5rem;border-radius:6px;color:#00d4aa}
+      <style>body{font-family:system-ui;background:#0f0a18;color:#f2eef8;text-align:center;padding:2rem}
+      .qr{display:inline-block;padding:1rem;background:#fff;border-radius:16px}
+      code{background:#1a1428;padding:.25rem .5rem;border-radius:8px;color:#c084fc}
       </style></head><body>
-      <h2 style="color:#00d4aa">Scan with your authenticator</h2>
+      <h2 style="color:#c084fc">Scan with your authenticator</h2>
       <div class="qr">${qrSvg}</div>
       <p>or manually enter this secret:</p>
       <p><code>${secret}</code></p>
-      <p style="color:#8a99b8;font-size:.9em">After scanning, close this window and use the next 6-digit code to sign in.</p>
+      <p style="color:#9b93b8;font-size:.9em">After scanning, close this window and use the next 6-digit code to sign in.</p>
       </body></html>`);
     pushRecent('mfa.enroll.started', 'ok');
     toast('MFA enrollment started — scan the QR', 'ok');

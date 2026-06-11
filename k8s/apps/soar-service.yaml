@@ -52,7 +52,8 @@ spec:
         seccompProfile: { type: RuntimeDefault }
       containers:
         - name: soar
-          image: ghcr.io/securebank/soar-service:1.0.0@sha256:REPLACE_AT_BUILD
+          image: securebank-soar-service:latest
+          imagePullPolicy: IfNotPresent
           ports: [{ containerPort: 8006 }]
           env:
             - name: SB_QRADAR_WEBHOOK_SECRET

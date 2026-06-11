@@ -41,7 +41,10 @@ resource "kubernetes_resource_quota" "app_quota" {
 
 resource "kubernetes_network_policy" "default_deny" {
   for_each = toset(["securebank-app", "securebank-data", "securebank-sec"])
-  metadata { name = "default-deny" namespace = each.value }
+  metadata {
+    name      = "default-deny"
+    namespace = each.value
+  }
   spec {
     pod_selector {}
     policy_types = ["Ingress", "Egress"]

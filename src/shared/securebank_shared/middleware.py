@@ -53,8 +53,9 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response.headers.setdefault("Cross-Origin-Opener-Policy", "same-origin")
         response.headers.setdefault("Cross-Origin-Resource-Policy", "same-site")
         response.headers.setdefault("X-XSS-Protection", "0")
-        response.headers.pop("Server", None)
-        response.headers.pop("X-Powered-By", None)
+        for hop in ("Server", "X-Powered-By"):
+            if hop in response.headers:
+                del response.headers[hop]
         return response
 
 

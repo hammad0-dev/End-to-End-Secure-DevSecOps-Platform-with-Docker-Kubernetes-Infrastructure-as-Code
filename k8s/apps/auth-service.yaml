@@ -30,7 +30,7 @@ spec:
         seccompProfile: { type: RuntimeDefault }
       containers:
         - name: auth-service
-          image: ghcr.io/securebank/auth-service:1.0.0@sha256:REPLACE_AT_BUILD
+          image: securebank-auth-service:latest
           imagePullPolicy: IfNotPresent
           ports: [{ containerPort: 8001, name: http }]
           env:

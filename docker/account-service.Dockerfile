@@ -7,7 +7,7 @@ WORKDIR /build
 COPY src/shared /build/shared
 COPY src/account-service /build/svc
 RUN pip wheel --wheel-dir /wheels /build/shared && \
-    pip install --no-deps --prefix=/install --no-index --find-links=/wheels securebank-shared && \
+    pip install --prefix=/install --no-index --find-links=/wheels securebank-shared && \
     pip install --prefix=/install --no-cache-dir \
         fastapi 'uvicorn[standard]' pydantic pydantic-settings sqlalchemy asyncpg \
         redis 'pyjwt[crypto]' cryptography httpx prometheus-client python-json-logger \
@@ -24,5 +24,4 @@ WORKDIR /app
 EXPOSE 8002
 HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
   CMD ["python","-c","import urllib.request,sys; sys.exit(0) if urllib.request.urlopen('http://127.0.0.1:8002/health',timeout=2).status==200 else sys.exit(1)"]
-ENTRYPOINT ["python","-m","uvicorn","app.main:app","--host","0.0.0.0","--port","8002",
-            "--no-server-header","--proxy-headers","--forwarded-allow-ips=*"]
+ENTRYPOINT ["python","-m","uvicorn","app.main:app","--host","0.0.0.0","--port","8002","--no-server-header","--proxy-headers","--forwarded-allow-ips=*"]

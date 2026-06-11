@@ -11,7 +11,7 @@ resource "helm_release" "kube_prom_stack" {
   repository       = "https://prometheus-community.github.io/helm-charts"
   chart            = "kube-prometheus-stack"
   version          = "62.6.0"
-  values = [file("${path.module}/values-prom.yaml")]
+  values           = [file("${path.module}/values-prom.yaml")]
 }
 
 resource "helm_release" "loki" {
@@ -23,11 +23,14 @@ resource "helm_release" "loki" {
 }
 
 resource "helm_release" "falco" {
-  name       = "falco"
-  namespace  = "falco"
+  name             = "falco"
+  namespace        = "falco"
   create_namespace = true
-  repository = "https://falcosecurity.github.io/charts"
-  chart      = "falco"
-  version    = "4.2.5"
-  set { name = "driver.kind" value = "ebpf" }
+  repository       = "https://falcosecurity.github.io/charts"
+  chart            = "falco"
+  version          = "4.2.5"
+  set {
+    name  = "driver.kind"
+    value = "ebpf"
+  }
 }

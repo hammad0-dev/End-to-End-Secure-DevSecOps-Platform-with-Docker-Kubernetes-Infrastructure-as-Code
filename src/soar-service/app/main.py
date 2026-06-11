@@ -70,7 +70,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="SecureBank SOAR", version="1.0.0", lifespan=lifespan)
-install_security_middleware(app)
+install_security_middleware(app, service="soar-service")
 
 
 # ----------------------------------------------------------- helpers

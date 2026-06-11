@@ -20,7 +20,8 @@ spec:
         seccompProfile: { type: RuntimeDefault }
       containers:
         - name: fraud
-          image: ghcr.io/securebank/fraud-detection-service:1.0.0@sha256:REPLACE_AT_BUILD
+          image: securebank-fraud-detection-service:latest
+          imagePullPolicy: IfNotPresent
           ports: [{ containerPort: 8004 }]
           env:
             - name: SB_KAFKA_BOOTSTRAP

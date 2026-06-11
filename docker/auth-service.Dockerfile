@@ -11,7 +11,7 @@ WORKDIR /build
 COPY src/shared /build/shared
 COPY src/auth-service /build/svc
 RUN pip wheel --wheel-dir /wheels /build/shared && \
-    pip install --no-deps --prefix=/install --no-index --find-links=/wheels securebank-shared && \
+    pip install --prefix=/install --no-index --find-links=/wheels securebank-shared && \
     pip install --prefix=/install --no-cache-dir \
         fastapi 'uvicorn[standard]' pydantic pydantic-settings sqlalchemy asyncpg \
         redis argon2-cffi 'pyjwt[crypto]' cryptography hvac httpx \
@@ -40,6 +40,4 @@ EXPOSE 8001
 HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
   CMD ["python","-c","import urllib.request,sys; sys.exit(0) if urllib.request.urlopen('http://127.0.0.1:8001/health',timeout=2).status==200 else sys.exit(1)"]
 
-ENTRYPOINT ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8001",
-            "--no-server-header", "--proxy-headers", "--forwarded-allow-ips=*",
-            "--log-config", "/dev/null"]
+ENTRYPOINT ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8001", "--no-server-header", "--proxy-headers", "--forwarded-allow-ips=*"]

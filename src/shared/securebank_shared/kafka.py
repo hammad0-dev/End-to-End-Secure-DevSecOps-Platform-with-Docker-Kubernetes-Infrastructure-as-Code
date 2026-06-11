@@ -32,6 +32,21 @@ def _ssl_ctx(ca: str | None, cert: str | None, key: str | None) -> ssl.SSLContex
     return create_ssl_context(cafile=ca, certfile=cert, keyfile=key)
 
 
+def _kafka_security(
+    *,
+    sasl_username: str | None,
+    ca: str | None,
+    cert: str | None,
+    key: str | None,
+) -> tuple[str, ssl.SSLContext | None, str | None]:
+    """Pick Kafka security mode from available credentials (PLAINTEXT for dev compose)."""
+    if sasl_username:
+        return "SASL_SSL", _ssl_ctx(ca, cert, key), "SCRAM-SHA-512"
+    if ca and cert and key:
+        return "SSL", _ssl_ctx(ca, cert, key), None
+    return "PLAINTEXT", None, None
+
+
 def envelope(issuer: str, hmac_key: bytes, data: dict[str, Any]) -> bytes:
     payload = {
         "v": _ENVELOPE_VERSION,
@@ -73,16 +88,19 @@ class SecureProducer:
     ) -> None:
         self._issuer = issuer
         self._key = hmac_key
+        sec_proto, ssl_ctx, sasl_mech = _kafka_security(
+            sasl_username=sasl_username, ca=ca, cert=cert, key=key,
+        )
         self._producer = AIOKafkaProducer(
             bootstrap_servers=bootstrap_servers,
             enable_idempotence=True,
             acks="all",
             compression_type="gzip",
-            security_protocol="SASL_SSL" if sasl_username else "SSL",
-            sasl_mechanism="SCRAM-SHA-512" if sasl_username else None,
+            security_protocol=sec_proto,
+            sasl_mechanism=sasl_mech,
             sasl_plain_username=sasl_username,
             sasl_plain_password=sasl_password,
-            ssl_context=_ssl_ctx(ca, cert, key),
+            ssl_context=ssl_ctx,
             request_timeout_ms=15_000,
             metadata_max_age_ms=60_000,
         )
@@ -115,17 +133,20 @@ class SecureConsumer:
     ) -> None:
         self._key = hmac_key
         self._topic = topic
+        sec_proto, ssl_ctx, sasl_mech = _kafka_security(
+            sasl_username=sasl_username, ca=ca, cert=cert, key=key,
+        )
         self._consumer = AIOKafkaConsumer(
             topic,
             bootstrap_servers=bootstrap_servers,
             group_id=group_id,
             enable_auto_commit=False,
             auto_offset_reset="earliest",
-            security_protocol="SASL_SSL" if sasl_username else "SSL",
-            sasl_mechanism="SCRAM-SHA-512" if sasl_username else None,
+            security_protocol=sec_proto,
+            sasl_mechanism=sasl_mech,
             sasl_plain_username=sasl_username,
             sasl_plain_password=sasl_password,
-            ssl_context=_ssl_ctx(ca, cert, key),
+            ssl_context=ssl_ctx,
         )
 
     async def start(self) -> None:

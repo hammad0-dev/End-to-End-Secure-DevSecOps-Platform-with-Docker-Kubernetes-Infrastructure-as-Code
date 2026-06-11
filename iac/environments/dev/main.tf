@@ -25,5 +25,8 @@ provider "vault" {
 }
 
 module "namespaces" { source = "../../modules/kubernetes" }
-module "vault"      { source = "../../modules/vault" }
-module "monitoring" { source = "../../modules/monitoring" depends_on = [module.namespaces] }
+module "vault" { source = "../../modules/vault" }
+module "monitoring" {
+  source     = "../../modules/monitoring"
+  depends_on = [module.namespaces]
+}

@@ -73,5 +73,6 @@ class AuditLogger:
             body = json.dumps(asdict(rec), sort_keys=True, separators=(",", ":")).encode()
             rec.hash = hashlib.sha256(body).hexdigest()
             self._prev_hash = rec.hash
-            _LOG.info("audit", **asdict(rec))
+            payload = asdict(rec)
+            _LOG.info("audit", audit_event=payload.pop("event"), **payload)
             return rec

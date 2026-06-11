@@ -36,7 +36,7 @@ async def init_state() -> AppState:
     sf = make_session_factory(engine)
 
     redis_url = settings.redis_url or "redis://redis:6379/0"
-    r = Redis.from_url(redis_url, decode_responses=False, ssl=False)  # ssl wrapped by sidecar in k8s
+    r = Redis.from_url(redis_url, decode_responses=False)
 
     ring = keyring_from_env()
 

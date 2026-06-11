@@ -145,6 +145,7 @@ services:
     environment:
       SB_REDIS_URL: redis://:securebank-dev-only@redis:6379/3
       SB_KAFKA_BOOTSTRAP: kafka:9092
+      SB_MODEL_PATH: /tmp/fraud_iforest.joblib
     depends_on:
       - redis
       - kafka
@@ -224,6 +225,7 @@ services:
       - "8007:8007"
     environment:
       SB_LLM_PROVIDER: heuristic
+      SB_FRAUD_MODEL_PATH: /tmp/fraud_iforest.joblib
     depends_on:
       - fraud-detection-service
     networks:

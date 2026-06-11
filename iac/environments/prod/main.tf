@@ -16,7 +16,11 @@ terraform {
 }
 
 provider "kubernetes" { config_path = "~/.kube/config-prod" }
-provider "helm"       { kubernetes { config_path = "~/.kube/config-prod" } }
+provider "helm" {
+  kubernetes {
+    config_path = "~/.kube/config-prod"
+  }
+}
 provider "vault" {
   address   = var.vault_addr
   namespace = "securebank"
@@ -30,12 +34,25 @@ provider "kafka" {
   sasl_password     = var.kafka_admin_pass
 }
 
-variable "vault_addr"        { type = string }
-variable "kafka_bootstrap"   { type = string }
-variable "kafka_admin_user"  { type = string sensitive = true }
-variable "kafka_admin_pass"  { type = string sensitive = true }
+variable "vault_addr" {
+  type = string
+}
+variable "kafka_bootstrap" {
+  type = string
+}
+variable "kafka_admin_user" {
+  type      = string
+  sensitive = true
+}
+variable "kafka_admin_pass" {
+  type      = string
+  sensitive = true
+}
 
 module "namespaces" { source = "../../modules/kubernetes" }
-module "vault"      { source = "../../modules/vault" }
-module "kafka"      { source = "../../modules/kafka" }
-module "monitoring" { source = "../../modules/monitoring" depends_on = [module.namespaces] }
+module "vault" { source = "../../modules/vault" }
+module "kafka" { source = "../../modules/kafka" }
+module "monitoring" {
+  source     = "../../modules/monitoring"
+  depends_on = [module.namespaces]
+}

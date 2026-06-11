@@ -26,7 +26,8 @@ spec:
         seccompProfile: { type: RuntimeDefault }
       containers:
         - name: transaction-service
-          image: ghcr.io/securebank/transaction-service:1.0.0@sha256:REPLACE_AT_BUILD
+          image: securebank-transaction-service:latest
+          imagePullPolicy: IfNotPresent
           ports: [{ containerPort: 8003 }]
           env:
             - name: SB_POSTGRES_DSN

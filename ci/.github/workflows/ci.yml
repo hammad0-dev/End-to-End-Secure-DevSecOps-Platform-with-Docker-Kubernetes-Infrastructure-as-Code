@@ -111,8 +111,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        svc: [auth-service, account-service, transaction-service, fraud-detection-service, notification-service, api-gateway, frontend]
-    steps:
+  svc:
+    - auth-service
+    - account-service
+    - transaction-service
+    - fraud-detection-service
+    - notification-service
+    - api-gateway
+    - frontend    
+  steps:
       - uses: actions/checkout@v4
 
       - uses: docker/setup-qemu-action@v3
@@ -128,7 +135,7 @@ jobs:
       - id: build
         uses: docker/build-push-action@v6
         with:
-          context: .
+          context: "."
           file: docker/${{ matrix.svc }}.Dockerfile
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAMESPACE }}/${{ matrix.svc }}:${{ github.sha }}

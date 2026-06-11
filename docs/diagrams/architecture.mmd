@@ -1,0 +1,53 @@
+%% SecureBank — Container Diagram (C4 L2). Render with mermaid-cli.
+flowchart TB
+    subgraph Internet[Internet]
+        U[Customer Browser]
+        ATT[Threat Actor]
+    end
+    subgraph Edge[Edge / DMZ]
+        WAF[Cloudflare WAF + Modsec]
+        GW[API Gateway<br/>FastAPI + slowapi]
+    end
+    subgraph App[Application Plane]
+        AUTH[Auth Service]
+        ACC[Account Service]
+        TX[Transaction Service]
+        FR[Fraud ML Service]
+        NOT[Notification Service]
+    end
+    subgraph Data[Data Plane]
+        PG[(PostgreSQL HA)]
+        RDS[(Redis Sentinel)]
+        KAFKA[(Kafka 3-broker)]
+    end
+    subgraph SecObs[Sec & Obs]
+        OPA[OPA]
+        FALCO[Falco]
+        PROM[Prometheus]
+        LOKI[Loki]
+        GRAF[Grafana]
+        QR[IBM QRadar]
+        ML[ML Engine]
+        VAULT[(Vault HA)]
+    end
+
+    U-- TLS 1.3 -->WAF
+    ATT-. blocked .->WAF
+    WAF-->GW
+    GW-- mTLS+JWT -->AUTH
+    GW-- mTLS+JWT -->ACC
+    GW-- mTLS+JWT -->TX
+    AUTH<-->RDS
+    AUTH<-->PG
+    AUTH-.->OPA
+    ACC<-->PG
+    TX<-->PG
+    TX-- producer -->KAFKA
+    KAFKA-- consumer -->FR
+    KAFKA-- consumer -->NOT
+    FR-->ML
+    AUTH & ACC & TX & FR & NOT -- AppRole -->VAULT
+    FALCO-- syslog/cef -->QR
+    PROM-->GRAF
+    LOKI-->GRAF
+    LOKI-- forward -->QR

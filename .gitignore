@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+dist/
+build/
+*.whl
+
+# Secrets & env
+.env
+.env.*
+*.pem
+*.key
+vault-data/
+docker/certs/
+/tmp/ca.pem
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Terraform
+iac/**/.terraform/
+iac/**/*.tfstate
+iac/**/*.tfstate.*
+*.tfvars
+
+# Reports (keep summaries; ignore raw scan dumps)
+reports/**/raw/
+*.sarif
+
+# Node
+node_modules/
+
+# Marp / build artifacts (keep slides.html; ignore temp)
+docs/presentation/*.pptx

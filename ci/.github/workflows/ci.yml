@@ -127,23 +127,23 @@ jobs:
   #       with:
   #         sarif_file: trivy-results.sarif
 
-  jobs:
-  zap:
-    runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v4
+    zap:
+      runs-on: ubuntu-latest
 
-      - name: Start Stack
-        run: docker compose -f docker/docker-compose.yml up -d
+      steps:
+        - uses: actions/checkout@v4
 
-      - name: Wait for Application
-        run: sleep 30
+        - name: Start Stack
+          run: docker compose -f docker/docker-compose.yml up -d
 
-      - name: Run ZAP Baseline with Docker
-        run: |
-          docker run --rm --network=host ghcr.io/zaproxy/zaproxy:stable \
-            zap-baseline.py -t http://localhost:8443 -I
+        - name: Wait for Application
+          run: sleep 30
+
+        - name: Run ZAP Baseline with Docker
+          run: |
+            docker run --rm --network=host ghcr.io/zaproxy/zaproxy:stable \
+              zap-baseline.py -t http://localhost:8443 -I
           
 
       

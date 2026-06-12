@@ -3,7 +3,7 @@ Common labels.
 */}}
 {{- define "securebank.labels" -}}
 app.kubernetes.io/name: {{ .name }}
-app.kubernetes.io/instance: {{ $.Release.Name }}
+app.kubernetes.io/instance: {{ default "securebank" .Release.Name }}
 app.kubernetes.io/version: {{ $.Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ $.Release.Service }}
 helm.sh/chart: {{ $.Chart.Name }}-{{ $.Chart.Version }}

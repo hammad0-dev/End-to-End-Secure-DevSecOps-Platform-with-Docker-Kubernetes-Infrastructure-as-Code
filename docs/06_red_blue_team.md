@@ -18,7 +18,7 @@ This document describes the eleven adversary scenarios rehearsed against SecureB
 | 8 | Container Escape | TA0004 | T1611 |
 | 9 | Lateral Movement via Kafka | TA0008 | T1021 |
 | 10 | Data Exfiltration via DNS | TA0010 | T1048.003 |
-| 11 | ML Fraud Evasion | TA0040 | T1485 |
+
 
 ## 2. Detailed Scenarios
 

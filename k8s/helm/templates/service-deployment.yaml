@@ -11,7 +11,7 @@ metadata:
   name: {{ $kebab }}
   namespace: {{ $ns }}
   labels:
-    {{- include "securebank.labels" (dict "name" $kebab) | nindent 4 }}
+    {{ include "securebank.labels" (dict "name" $kebab "Release" $.Release "Chart" $.Chart) }}
 spec:
   replicas: {{ $svc.replicas | default 2 }}
   selector:

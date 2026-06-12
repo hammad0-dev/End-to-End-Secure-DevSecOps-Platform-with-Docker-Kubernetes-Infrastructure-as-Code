@@ -91,7 +91,6 @@ jobs:
           - auth-service
           - account-service
           - transaction-service
-          - fraud-detection-service
           - notification-service
           - api-gateway
 

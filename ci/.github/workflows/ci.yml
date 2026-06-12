@@ -127,22 +127,23 @@ jobs:
   #       with:
   #         sarif_file: trivy-results.sarif
 
+  jobs:
   zap:
-    name: ZAP DAST
     runs-on: ubuntu-latest
-    # needs: build
-    if: github.ref == 'refs/heads/main'
+
     steps:
       - uses: actions/checkout@v4
 
       - name: Start Stack
         run: docker compose -f docker/docker-compose.yml up -d
 
-      - name: ZAP Baseline Scan
-        uses: zaproxy/action-baseline@v0.12.0
-        with:
-          target: "http://localhost:8443"
-          allow_issue_writing: false
+      - name: Wait for Application
+        run: sleep 30
+
+      - name: Run ZAP Baseline with Docker
+        run: |
+          docker run --rm --network=host ghcr.io/zaproxy/zaproxy:stable \
+            zap-baseline.py -t http://localhost:8443 -I
           
 
       

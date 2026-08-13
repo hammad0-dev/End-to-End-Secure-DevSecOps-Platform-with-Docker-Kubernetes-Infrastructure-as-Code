@@ -14,3 +14,25 @@ terraform {
     path = "terraform.tfstate"
   }
 }
+provider "aws" {
+  region = "us-east-1"
+}
+resource "aws_security_group" "allow_all_ssh" {
+  name        = "allow_all_ssh"
+  description = "Security group that allows SSH from anywhere"
+  
+  # VULNERABILITY: Ingress open to 0.0.0.0/0
+  ingress {
+    description      = "SSH from anywhere"
+    from_port        = 22
+    to_port          = 22
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+}
